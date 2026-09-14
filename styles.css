@@ -279,8 +279,47 @@ h1 {
   font-size: 0.9rem;
 }
 
-.secondary-btn:hover {
+.secondary-btn:not(.copy-btn):not(.edit-btn):not(.delete-btn):hover {
   opacity: 0.9;
+}
+
+.snippet-actions .secondary-btn {
+  background-color: transparent;
+  border: 1px solid currentColor;
+  transition: background-color var(--transition-speed), border-color var(--transition-speed), color var(--transition-speed);
+}
+
+.snippet-actions .copy-btn {
+  color: #28a745;
+}
+
+.snippet-actions .edit-btn {
+  color: #17a2b8;
+}
+
+.snippet-actions .delete-btn {
+  color: #dc3545;
+}
+
+.copy-btn:hover,
+.copy-btn:focus-visible {
+  background-color: #28a745;
+  border-color: #28a745;
+  color: white;
+}
+
+.edit-btn:hover,
+.edit-btn:focus-visible {
+  background-color: #17a2b8;
+  border-color: #17a2b8;
+  color: white;
+}
+
+.delete-btn:hover,
+.delete-btn:focus-visible {
+  background-color: #dc3545;
+  border-color: #dc3545;
+  color: white;
 }
 
 .content-area {
@@ -525,14 +564,10 @@ textarea {
   color: #f39c12; /* Keep gold color when pinned */
 }
 
-.copy-btn {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
 .copy-btn:disabled {
   background-color: #28a745; /* Green color for success feedback */
+  border-color: #28a745;
+  color: white;
   opacity: 1;
 }
 
