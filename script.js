@@ -42,6 +42,7 @@ closeModalBtn.addEventListener('click', closeModal);
 cancelSnippetBtn.addEventListener('click', closeModal);
 saveSnippetBtn.addEventListener('click', saveSnippet);
 toggleSidebarBtn.addEventListener('click', toggleSidebar);
+document.addEventListener('keydown', handleSearchShortcut);
 
 // Focus search from anywhere outside the add/edit code modal.
 document.addEventListener('keydown', (event) => {
@@ -58,6 +59,20 @@ document.addEventListener('keydown', (event) => {
 });
 
 // Functions
+// Ctrl + / (Cmd + / on Mac) focuses the search bar from anywhere on the page
+function handleSearchShortcut(e) {
+  if (!(e.ctrlKey || e.metaKey) || e.altKey || e.key !== '/') return;
+
+  // Don't steal focus while a modal (editor or preview) is covering the search bar
+  if (document.querySelector('.modal-overlay.active')) return;
+
+  e.preventDefault();
+  searchInput.focus();
+  // Keep any existing query and place the caret at the end of it
+  const end = searchInput.value.length;
+  searchInput.setSelectionRange(end, end);
+}
+
 function loadSnippets() {
   const storedSnippets = localStorage.getItem('codeSnippets');
   const storedOrder = localStorage.getItem('snippetOrder');
@@ -338,11 +353,6 @@ function togglePin(id) {
   }
 }
 
-function saveSnippetsToStorage() {
-  localStorage.setItem('codeSnippets', JSON.stringify(snippets));
-}
-
-
 function copyToClipboard(id) {
   const snippet = snippets.find(s => s.id === id);
   if (snippet) {
@@ -377,17 +387,20 @@ const closePreviewBtn = document.getElementById('close-preview-modal');
 
 function openPreview(code) {
   previewCode.textContent = code;
+  // highlight.js skips elements it has already highlighted
+  delete previewCode.dataset.highlighted;
   hljs.highlightElement(previewCode);
-  previewModal.style.display = 'flex';
+  previewModal.classList.add('active');
 }
 
 closePreviewBtn.addEventListener('click', () => {
-  previewModal.style.display = 'none';
+  previewModal.classList.remove('active');
 });
 
 document.getElementById('snippets-grid').addEventListener('click', (e) => {
   const snippetCard = e.target.closest('.snippet-card');
-  if (!snippetCard) return;
+  // Card buttons (pin, copy, edit, delete) have their own actions
+  if (!snippetCard || e.target.closest('button')) return;
   const code = snippetCard.querySelector('pre') ? snippetCard.querySelector('pre').textContent : '';
   if(code) openPreview(code);
 });
@@ -441,4 +454,5 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   loadOrder();
+});
 });
