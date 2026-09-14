@@ -43,6 +43,20 @@ cancelSnippetBtn.addEventListener('click', closeModal);
 saveSnippetBtn.addEventListener('click', saveSnippet);
 toggleSidebarBtn.addEventListener('click', toggleSidebar);
 
+// Focus search from anywhere outside the add/edit code modal.
+document.addEventListener('keydown', (event) => {
+  const isSearchShortcut = (event.ctrlKey || event.metaKey) &&
+    !event.altKey &&
+    event.key === '/';
+
+  if (!isSearchShortcut || modalOverlay.classList.contains('active')) {
+    return;
+  }
+
+  event.preventDefault();
+  searchInput.focus();
+});
+
 // Functions
 function loadSnippets() {
   const storedSnippets = localStorage.getItem('codeSnippets');
